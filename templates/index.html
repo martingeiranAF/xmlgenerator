@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>XML Document Generator</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #444444;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+            place-content: center;
+            display: grid;
+        }
+
+        .custom-file-upload {
+            display: none;
+            margin-bottom: 10px;
+            background-color: #fecb00;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: .25rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        input[type="submit"] {
+            background-color: #fecb00;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: .25rem;
+        }
+
+        input:hover {
+            background-color: #f7b500;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #f7b500;
+        }
+
+        .main-container {
+            display: grid;
+            place-content: center;
+        }
+
+        .main-img {
+            width: 200px;
+            height: auto;
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>XML Document Generator</h1>
+    <div class="main-container">
+        <img src="../static/person.png" class="main-img" />
+        <form method="POST" enctype="multipart/form-data">
+            <label class="custom-file-upload">
+                <input id="file-input" type="file" name="files" multiple>
+                Last opp pdf-filer
+            </label>
+            <p id="file-count">Antall PDFer: {{ num_files }}</p>
+            <input type="submit" value="Generer og last ned">
+        </form>
+    </div>
+</body>
+<script>
+    // JavaScript code to update the file count dynamically
+
+    // Get the file input element
+    const fileInput = document.getElementById('file-input');
+
+    // Add an event listener to listen for changes in the file input
+    fileInput.addEventListener('change', function () {
+        // Get the number of selected files
+        const numFiles = fileInput.files.length;
+
+        // Update the file count element with the new value
+        const fileCountElement = document.getElementById('file-count');
+        fileCountElement.textContent = 'Antall PDFer: ' + numFiles;
+        console.log(numFiles);
+    });
+</script>
+
+</html>

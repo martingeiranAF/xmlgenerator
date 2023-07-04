@@ -101,12 +101,7 @@
                     <input id="file-input" type="file" name="files" multiple>
                     Last opp pdf-filer
                 </label>
-                <!-- <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
-                    <p>Drag one or more files to this <i>drop zone</i>.</p>
-                </div> -->
-
                 <p id="file-count">Antall pdf-filer: 0</p>
-                <!-- <input type="submit" value="Generer og last ned"> -->
             </form>
             <button id="mergeButton" class="custom-file-upload">Generer og last ned</button>
         </div>
@@ -209,7 +204,7 @@
             pageNoElement.textContent = "1";
             pageElement.appendChild(pageNoElement);
 
-            var filenameElement = xmlDoc.createElement("filename");
+            var filenameElement = xmlDoc.createElement("Filename");
             filenameElement.textContent = filename;
             pageElement.appendChild(filenameElement);
 

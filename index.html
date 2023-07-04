@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>XML Document Generator</title>
+    <link rel="shortcut icon" href="static/person.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #444444;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+            place-content: center;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .custom-file-upload {
+            display: none;
+            margin-bottom: 10px;
+            background-color: #fecb00;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: .25rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        input[type="submit"] {
+            background-color: #fecb00;
+            color: black;
+            border: none;
+            padding: 10px 0px;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: .25rem;
+        }
+
+        input:hover {
+            background-color: #f7b500;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #f7b500;
+        }
+
+        .main-container {
+            display: grid;
+            place-content: center;
+        }
+
+        .main-img {
+            width: 190px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>XML Document Generator</h1>
+    <div class="main-container">
+        <img src="../static/person.png" class="main-img" />
+        <form method="POST" enctype="multipart/form-data">
+            <label class="custom-file-upload">
+                <input id="file-input" type="file" name="files" multiple>
+                Last opp pdf-filer
+            </label>
+            <p id="file-count">Antall PDFer: 0</p>
+            <!-- <input type="submit" value="Generer og last ned"> -->
+        </form>
+        <button id="mergeButton" class="custom-file-upload">Generer og last ned</button>
+    </div>
+</body>
+<script>
+    // JavaScript code to update the file count dynamically
+
+    // Get the file input element
+    const fileInput = document.getElementById('file-input');
+
+    // Add an event listener to listen for changes in the file input
+    fileInput.addEventListener('change', function () {
+        // Get the number of selected files
+        const numFiles = fileInput.files.length;
+
+        // Update the file count element with the new value
+        const fileCountElement = document.getElementById('file-count');
+        fileCountElement.textContent = 'Antall PDFer: ' + numFiles;
+        console.log(numFiles);
+    });
+
+    function extractNumberFromFilename(filename) {
+
+        var regex = /\d+/g;
+
+        var match = filename.match(regex);
+        if (match) {
+            return match.map(Number);
+        }
+    }
+
+    // Function to merge multiple documents
+    function mergeDocuments() {
+        var fileList = fileInput.files
+        var filenames = Array.from(fileList).map(file => file.name);
+        console.log(filenames);
+        
+        var xmlDoc = document.implementation.createDocument(null, "abwdocument");
+        var abwDocument = xmlDoc.createElement("ABWDocument");
+        abwDocument.setAttribute("xmlns:agrlib", "http://services.agresso.com/schema/ABWSchemaLib/2005/05/13");
+        abwDocument.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        abwDocument.setAttribute("xsi:schemaLocation", "http://services.agresso.com/schema/ABWDocument/2005/05/13 http://services.agresso.com/schema/ABWDocument/2005/05/13/ABWDocument.xsd");
+        abwDocument.setAttribute("xmlns", "http://services.agresso.com/schema/ABWDocument/2005/05/13");
+
+        var headerElement = xmlDoc.createElement("Header");
+        var docLibraryElement = xmlDoc.createElement("agrlib:DocLibrary");
+        docLibraryElement.textContent = "1K";
+        headerElement.appendChild(docLibraryElement);
+        var registrationFlagElement = xmlDoc.createElement("RegistrationFlag");
+        registrationFlagElement.textContent = "0";
+        headerElement.appendChild(registrationFlagElement);
+        abwDocument.appendChild(headerElement);
+
+        var documentsElement = xmlDoc.createElement("Documents");
+
+        filenames.forEach(function (filename) {
+            var number = extractNumberFromFilename(filename);
+            var documentElement = xmlDoc.createElement("Document");
+
+            var externalDocIdElement = xmlDoc.createElement("agrlib:ExternalDocId");
+            externalDocIdElement.textContent = `${number}`;
+            documentElement.appendChild(externalDocIdElement);
+
+            var docTypeElement = xmlDoc.createElement("DocType");
+            docTypeElement.textContent = "CURDOK";
+            documentElement.appendChild(docTypeElement);
+
+            var docIndex1Element = xmlDoc.createElement("DocIndex1");
+            docIndex1Element.textContent = "1K";
+            documentElement.appendChild(docIndex1Element);
+
+            var docIndex1OkElement = xmlDoc.createElement("DocIndex1OK");
+            docIndex1OkElement.textContent = "1";
+            documentElement.appendChild(docIndex1OkElement);
+
+            var docIndex2Element = xmlDoc.createElement("DocIndex2");
+            docIndex2Element.textContent = "1010";
+            documentElement.appendChild(docIndex2Element);
+
+            var docIndex2OkElement = xmlDoc.createElement("DocIndex2OK");
+            docIndex2OkElement.textContent = "1";
+            documentElement.appendChild(docIndex2OkElement);
+
+            var docIndex3Element = xmlDoc.createElement("DocIndex3");
+            docIndex3Element.textContent = `${number}`;
+            documentElement.appendChild(docIndex3Element);
+
+            var docIndex3OkElement = xmlDoc.createElement("DocIndex3OK");
+            docIndex3OkElement.textContent = "1";
+            documentElement.appendChild(docIndex3OkElement);
+
+            var pagesElement = xmlDoc.createElement("Pages");
+
+            var pageElement = xmlDoc.createElement("Page");
+
+            var pageNoElement = xmlDoc.createElement("PageNo");
+            pageNoElement.textContent = "1";
+            pageElement.appendChild(pageNoElement);
+
+            var filenameElement = xmlDoc.createElement("filename");
+            filenameElement.textContent = filename;
+            pageElement.appendChild(filenameElement);
+
+            pagesElement.appendChild(pageElement);
+            documentElement.appendChild(pagesElement);
+
+            documentsElement.appendChild(documentElement);
+        });
+
+        abwDocument.appendChild(documentsElement);
+
+        var xmlDeclaration = '<?xml version="1.0" encoding="iso-8859-1"?>';
+        var xmlContent = xmlDeclaration + '\n' + abwDocument.outerHTML;
+
+        return xmlContent;
+    }
+    // Trigger the merging and download
+    function mergeAndDownload() {
+        var filenames = ["file1.pdf", "file2.pdf", "file3.pdf"];
+        var mergedDocument = mergeDocuments(fileInput.files);
+
+        var blob = new Blob([mergedDocument], { type: "application/xml" });
+        var url = URL.createObjectURL(blob);
+
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = "merged.xml";
+        link.click();
+
+        URL.revokeObjectURL(url);
+    }
+
+    // Attach event listener to the button
+    var mergeButton = document.getElementById("mergeButton");
+    mergeButton.addEventListener("click", mergeAndDownload);
+
+</script>
+
+</html>

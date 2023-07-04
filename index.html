@@ -84,9 +84,53 @@
             height: 100px;
             padding: 1rem 0;
         }
+
         .outer-container {
             display: grid;
             place-content: center;
+        }
+
+        #eyes {
+            position: absolute;
+            top: 280px;
+            left: calc(50%);
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 150px;
+        }
+
+        .eye1 {
+            position: absolute;
+            top: 50%;
+            left: 40%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 50%;
+            border: 2px solid black;
+        }
+        .eye2 {
+            position: absolute;
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 50%;
+            border: 2px solid black;
+        }
+
+        .pupil {
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            border-radius: 50%;
         }
     </style>
 </head>
@@ -104,6 +148,14 @@
                 <p id="file-count">Antall pdf-filer: 0</p>
             </form>
             <button id="mergeButton" class="custom-file-upload">Generer og last ned</button>
+        </div>
+    </div>
+    <div id="eyes">
+        <div class="eye1">
+            <div class="pupil"></div>
+        </div>
+        <div class="eye2">
+            <div class="pupil"></div>
         </div>
     </div>
 </body>
@@ -278,7 +330,32 @@
         ev.preventDefault();
     }
 
+    document.addEventListener('mousemove', function (event) {
+        var mouseX = event.clientX;
+        var mouseY = event.clientY;
 
+        var eyes = document.getElementById('eyes');
+        var eye1 = document.querySelector('.eye1');
+        var eye2 = document.querySelector('.eye2');
+        var pupil1 = document.querySelector('.eye1 .pupil');
+        var pupil2 = document.querySelector('.eye2 .pupil');
+
+        var eyesRect = eyes.getBoundingClientRect();
+        var eyesCenterX = eyesRect.left + eyesRect.width / 2;
+        var eyesCenterY = eyesRect.top + eyesRect.height / 2;
+
+        var deltaX = mouseX - eyesCenterX;
+        var deltaY = mouseY - eyesCenterY;
+
+        var angle = Math.atan2(deltaY, deltaX);
+        var distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 10);
+
+        var pupilX = Math.cos(angle) * distance * 5;
+        var pupilY = Math.sin(angle) * distance * 5;
+
+        pupil1.style.transform = `translate(${pupilX}%, ${pupilY}%)`;
+        pupil2.style.transform = `translate(${pupilX}%, ${pupilY}%)`;
+    });
 
 </script>
 
